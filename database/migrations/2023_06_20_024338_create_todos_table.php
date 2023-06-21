@@ -21,6 +21,7 @@ return new class extends Migration
             $table->timestamp('submission_date');
             $table->text('description');
             $table->string('assigned_by');
+            $table->string('image');
             $table->string('status')->default('pending')->comment('pending, completed, or overdue');
             $table->unsignedBigInteger('marks');
             $table->unsignedBigInteger('user_id');

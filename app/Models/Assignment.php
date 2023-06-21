@@ -9,10 +9,8 @@ class Assignment extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    // protected $fillable =
-    // [
-    //     'user_id','type','assigned_by','class_model_id','section_id','subject_id','assign_date','submission_date','marks','description','created_at','updated_at'
-    // ];
+
+   
 
     public function user()
     {
