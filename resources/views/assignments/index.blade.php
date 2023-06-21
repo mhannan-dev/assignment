@@ -17,7 +17,7 @@
                                 <th scope="col">Subject</th>
                                 <th scope="col">Class</th>
                                 <th scope="col">Marks</th>
-
+                                <th scope="col">Update status</th>
                                 <th scope="col">Actions</th>
                             </tr>
                         </thead>
@@ -29,10 +29,16 @@
                                 <td>{{ $item['subject']['title'] }}</td>
                                 <td>{{ $item['class']['title'] ?? "" }}</td>
                                 <td>{{ $item['marks'] ?? "" }}</td>
-
+                                <td>
+                                    <select class="form-control" id="statusElement" assignment_id="{{ $item['id'] }}">
+                                        <option value="pending" disabled="disabled" {{ $item['status'] == "pending" ? 'selected' : ''  }}>Pending</option>
+                                        <option value="completed" {{ $item['status'] == "completed" ? 'selected' : '' }}>Completed</option>
+                                        <option value="overdue" {{ $item['status'] == "overdue" ? 'selected' : '' }}>Overdue</option>
+                                    </select>
+                                </td>
                                 <td>
                                     <a href="{{ route('assignments.show', $item['id']) }}" class="btn btn-sm btn-primary">Details</a>
-                                    <a href="" class="btn btn-sm btn-warning">Edit</a>
+                                    <a href="{{ route('assignments.edit', $item['id']) }}" class="btn btn-sm btn-warning">Edit</a>
                                     <form style="display: inline-block" action="{{ route('assignments.destroy', $item['id']) }}" class="form-delete" method="post">
                                         @csrf
                                         @method('DELETE')
@@ -49,7 +55,6 @@
                                 <td class="text-muted text-center" colspan="100%">No Data Found!</td>
                             </tr>
                             @endforelse
-
                         </tbody>
                     </table>
                 </div>

@@ -3,8 +3,7 @@
     <div class="mb-3">
         <div class="form-group">
             <label>Type<span class="text-danger">*</span> </label>
-            <input type="text" name="type" class="form-control {{ $errors->has('type') ? 'is-invalid' : '' }}" placeholder="Assignent type">
-
+            <input type="text" name="type" class="form-control {{ $errors->has('type') ? 'is-invalid' : '' }}" placeholder="Assignent type" value="{{ old('type', $assignment->type) }}">
             @if ($errors->has('type'))
             <div class="invalid-feedback">
                 <strong>{{ $errors->first('type') }}</strong>
@@ -17,8 +16,7 @@
     <div class="mb-3">
         <div class="form-group">
             <label>Assigned by<span class="text-danger">*</span> </label>
-            <input type="text" class="form-control {{ $errors->has('assigned_by') ? 'is-invalid' : '' }}" placeholder="Assigned by" name="assigned_by">
-
+            <input type="text" class="form-control {{ $errors->has('assigned_by') ? 'is-invalid' : '' }}" placeholder="Assigned by" name="assigned_by"  value="{{ old('assigned_by', $assignment->assigned_by) }}">
 
             @if ($errors->has('assigned_by'))
             <div class="invalid-feedback">
@@ -35,7 +33,8 @@
             <select class="form-control {{ $errors->has('class_model_id') ? 'is-invalid' : '' }}" name="class_model_id">
                 <option value="">-- @lang('Select') --</option>
                 @foreach ($class as $item)
-                <option value="{{ $item->id }}">{{ $item->title }}</option>
+                <option value="{{ $item->id }}" @if (!empty($assignment['class_model_id']) &&
+                $assignment['class_model_id']==$item->id) selected @endif>{{ $item->title }}</option>
                 @endforeach
             </select>
 
@@ -55,7 +54,8 @@
             <select name="section_id" class="form-control {{ $errors->has('section_id') ? 'is-invalid' : '' }}">
                 <option value="">-- @lang('Select') --</option>
                 @foreach ($sections as $item)
-                <option value="{{ $item->id }}">{{ $item->title }}</option>
+                <option value="{{ $item->id }}" @if (!empty($assignment['section_id']) &&
+                $assignment['section_id']==$item->id) selected @endif>{{ $item->title }}</option>
                 @endforeach
             </select>
 
@@ -74,7 +74,8 @@
             <select class="form-control {{ $errors->has('subject_id') ? 'is-invalid' : '' }}" name="subject_id">
                 <option value="">-- @lang('Select') --</option>
                 @foreach ($subjects as $item)
-                <option value="{{ $item->id }}">{{ $item->title }}</option>
+                <option value="{{ $item->id }}" @if (!empty($assignment['subject_id']) &&
+                $assignment['subject_id']==$item->id) selected @endif>{{ $item->title }}</option>
                 @endforeach
             </select>
             @if ($errors->has('subject_id'))
@@ -89,7 +90,9 @@
 <div class="col-md-4">
     <div class="mb-3">
         <label class="form-label">Assign date <span class="text-danger">*</span> </label>
-        <input type="date" class="form-control {{ $errors->has('assign_date') ? 'is-invalid' : '' }}" name="assign_date">
+
+
+        <input type="date" class="form-control {{ $errors->has('assign_date') ? 'is-invalid' : '' }}" name="assign_date" value="{{ old('assign_date', formatDate($assignment->assign_date)) }}">
 
         @if ($errors->has('assign_date'))
         <div class="invalid-feedback">
@@ -102,7 +105,7 @@
 <div class="col-md-4">
     <div class="mb-3">
         <label class="form-label">Submission date<span class="text-danger">*</span> </label>
-        <input type="date" class="form-control {{ $errors->has('submission_date') ? 'is-invalid' : '' }}" name="submission_date">
+        <input type="date" class="form-control {{ $errors->has('submission_date') ? 'is-invalid' : '' }}" name="submission_date" value="{{ old('submission_date', formatDate($assignment->submission_date)) }}">
 
         @if ($errors->has('submission_date'))
         <div class="invalid-feedback">
@@ -115,7 +118,7 @@
 <div class="col-md-4">
     <div class="mb-3">
         <label class="form-label">Marks<span class="text-danger">*</span> </label>
-        <input type="number" name="marks" min="1" max="100" class="form-control {{ $errors->has('marks') ? 'is-invalid' : '' }}" placeholder="55">
+        <input type="number" name="marks" value="{{ old('marks', formatDate($assignment->marks)) }}" min="1" max="100" class="form-control {{ $errors->has('marks') ? 'is-invalid' : '' }}" placeholder="55">
 
         @if ($errors->has('marks'))
         <div class="invalid-feedback">

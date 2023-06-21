@@ -27,6 +27,7 @@ class TodoController extends Controller
         $data['class'] = DB::table('class_models')->get();
         $data['subjects'] = DB::table('subjects')->get();
         $data['sections'] = DB::table('sections')->get();
+        $data['assignment'] = new Assignment();
         return view('assignments.create', $data);
     }
 
@@ -74,7 +75,7 @@ class TodoController extends Controller
         // dd('attachments');
         if (isset($attachments)) {
             foreach ($attachments as $key => $image) {
-                dd('oka');
+
                 $attachFiles = new AssignmentAttachment();
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
                 if (!Storage::disk('public')->exists('files')) {
@@ -86,18 +87,18 @@ class TodoController extends Controller
                 $attachFiles->files = $imageName;
                 $attachFiles->assignment_id = $id;
                 $attachFiles->save();
-                dd('ok');
                 return back();
             }
         }
     }
 
-    public function edit(Assignment $assignment)
+    public function edit($id)
     {
-        if ($assignment->user_id !== auth()->id()) {
-            abort(403); // Unauthorized access
-        }
-        return view('assignments.edit', compact('assignment'));
+        $data['assignment'] = Assignment::find($id);
+        $data['class'] = DB::table('class_models')->get();
+        $data['subjects'] = DB::table('subjects')->get();
+        $data['sections'] = DB::table('sections')->get();
+        return view('assignments.edit', $data);
     }
 
     public function show($id)
@@ -137,7 +138,14 @@ class TodoController extends Controller
     public function download($filename)
     {
         $file = public_path('uploads/' . $filename);
-        // dd($file);
         return Response::download($file);
+    }
+
+    public function changeStatus(Request $request)
+    {
+        $data = $request->all();
+        $status = $data['selectedValue'];
+        DB::table('assignments')->where('id', $data['assignment_id'])->update(['status' => $status]);
+        return response()->json(['message' => 'Value processed successfully']);
     }
 }
