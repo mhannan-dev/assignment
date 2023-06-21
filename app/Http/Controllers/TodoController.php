@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
+use App\Http\Requests\StoreAssignmentRequest;
 use App\Models\Assignment;
+use App\Models\AssignmentAttachment;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Models\AssignmentAttachment;
-use Intervention\Image\Facades\Image;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
-use App\Http\Requests\StoreAssignmentRequest;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class TodoController extends Controller
 {
@@ -45,20 +46,17 @@ class TodoController extends Controller
             $assignment->user_id = auth()->id();
             $assignment->marks = $request->marks;
 
-            $image = $request->file('image');
+            $image = $request->file('attachment');
             if (isset($image)) {
-                $imageName  = time() . '.' . $image->getClientOriginalExtension();
-                if (!Storage::disk('public')->exists('files')) {
-                    Storage::disk('public')->makeDirectory('files');
-                }
-                //Saving image
-                $logoImage = Image::make($image)->resize(600, 600)->save(storage_path('files'));
-                // dd($logoImage);
-                Storage::disk('public')->put('files/' . $imageName, $logoImage);
-
+                $file = $request->file('attachment');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                // File upload location
+                $location = 'uploads';
+                // Upload file
+                $file->move($location, $filename);
             }
 
-            $assignment->image = $imageName;
+            $assignment->image = $filename;
             $assignment->save();
             DB::commit();
             return redirect()->route('assignments.index')->with('success', 'Assignment created successfully.');
@@ -78,7 +76,7 @@ class TodoController extends Controller
             foreach ($attachments as $key => $image) {
                 dd('oka');
                 $attachFiles = new AssignmentAttachment();
-                $imageName  = time() . '.' . $image->getClientOriginalExtension();
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
                 if (!Storage::disk('public')->exists('files')) {
                     Storage::disk('public')->makeDirectory('files');
                 }
@@ -124,12 +122,22 @@ class TodoController extends Controller
 
     public function destroy(Assignment $assignment)
     {
-        if ($assignment->user_id !== auth()->id()) {
+        if (auth()->user()->type !== "admin") {
             abort(403); // Unauthorized access
+        } else {
+            $image_path = public_path('uploads/') . $assignment->image;
+            if (!is_null($assignment)) {
+                $assignment->delete();
+                unlink($image_path);
+            }
+            return redirect()->route('assignments.index')->with('success', 'Assignment deleted successfully.');
         }
-        $assignment->delete();
-        return redirect()->route('assignments.index')->with('success', 'Assignment deleted successfully.');
     }
 
-
+    public function download($filename)
+    {
+        $file = public_path('uploads/' . $filename);
+        // dd($file);
+        return Response::download($file);
+    }
 }

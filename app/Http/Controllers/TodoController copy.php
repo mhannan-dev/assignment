@@ -31,48 +31,39 @@ class TodoController extends Controller
 
     public function store(StoreAssignmentRequest $request, Assignment $assignment)
     {
-        $data = $request->all();
-        // dd($data['attachments']);
         try {
             DB::beginTransaction();
-            $assignment->type = $data['type'];
-            $assignment->assigned_by = $data['assigned_by'];
-            $assignment->class_model_id = $data['class_model_id'];
-            $assignment->section_id = $data['section_id'];
-            $assignment->subject_id = $data['subject_id'];
-            $assignment->assign_date = $data['assign_date'];
-            $assignment->description = $data['description'];
-            $assignment->subject_id = $data['subject_id'];
-            $assignment->submission_date = $data['submission_date'];
+            $assignment->type = $request->type;
+            $assignment->assigned_by = $request->assigned_by;
+            $assignment->class_model_id = $request->class_model_id;
+            $assignment->section_id = $request->section_id;
+            $assignment->subject_id = $request->subject_id;
+            $assignment->assign_date = $request->assign_date;
+            $assignment->description = $request->description;
+            $assignment->subject_id = $request->subject_id;
+            $assignment->submission_date = $request->submission_date;
             $assignment->user_id = auth()->id();
-            $assignment->marks = $data['marks'];
-            $assignment->save();
-            $lastInsertedId = DB::getPdo()->lastInsertId();
-            if ($lastInsertedId) {
-                // dd($lastInsertedId);
-                $attachments = $data['attachments'];
-                foreach ($attachments as $key => $image) {
-                    dd('kay');
-                    $attachFiles = new AssignmentAttachment();
+            $assignment->marks = $request->marks;
 
-                    $imageName  = time() . '.' . $image->getClientOriginalExtension();
-                    if (!Storage::disk('public')->exists('files')) {
-                        Storage::disk('public')->makeDirectory('files');
-                    }
-                    //Saving image
-                    $logoImage = Image::make($image)->resize(600, 600)->save(storage_path('files'));
-                    Storage::disk('public')->put('files/' . $imageName, $logoImage);
-                    $attachFiles->files = $imageName;
-                    $attachFiles->assignment_id = $lastInsertedId;
-                    $attachFiles->save();
-
-                    DB::commit();
-                    return redirect()->route('assignments.index')->with('success', 'Assignment created successfully.');
+            $image = $request->file('image');
+            if (isset($image)) {
+                $imageName  = time() . '.' . $image->getClientOriginalExtension();
+                if (!Storage::disk('public')->exists('files')) {
+                    Storage::disk('public')->makeDirectory('files');
                 }
+                //Saving image
+                $logoImage = Image::make($image)->resize(600, 600)->save(storage_path('files'));
+                // dd($logoImage);
+                Storage::disk('public')->put('files/' . $imageName, $logoImage);
+
             }
 
+            $assignment->image = $imageName;
+            $assignment->save();
+            DB::commit();
+            return redirect()->route('assignments.index')->with('success', 'Assignment created successfully.');
+
         } catch (Exception $exception) {
-            // dd($exception);
             DB::rollBack();
             Log::error($exception->getMessage());
             return redirect()->route('assignments.index')->with('error', 'Assignment not saved.');

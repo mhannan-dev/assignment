@@ -30,6 +30,7 @@ class StoreAssignmentRequest extends FormRequest
             "description" => 'required',
             "submission_date" => 'required',
             "marks" =>  'required|numeric|between:1,100',
+            'attachment' => 'required|mimes:jpeg,png,pdf|max:2048'
         ];
     }
     public function messages()
@@ -41,9 +42,10 @@ class StoreAssignmentRequest extends FormRequest
             'section_id.required' => 'Please select section!',
             'subject_id.required' => 'Please select subject!',
             'assign_date.required' => 'Please select assign date!',
-            'description.required' => 'Please select description!',
+            'description.required' => 'Please write description!',
             'submission_date.required' => 'Please select submission date!',
             'marks.required' => 'Please enter marks!',
+            'attachment.required' => 'File Required!',
         ];
     }
 }
