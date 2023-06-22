@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Assignment extends Model
 {
     use HasFactory;
-    protected $guarded = ['id'];
-
-   
+    protected $fillable = ['type','assigned_by',
+    'class_model_id','section_id',
+    'subject_id','assign_date','description',
+    'submission_date','marks','attachment','user_id'];
 
     public function user()
     {

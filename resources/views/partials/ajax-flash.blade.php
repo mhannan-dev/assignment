@@ -1,1 +1,1 @@
-<div id="alertMessage" class="alert alert-dismissible fade show" role="alert"></div>
+<div id="alertMessage" class="alertMessage alert alert-dismissible fade show" role="alert"></div>

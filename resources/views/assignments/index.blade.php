@@ -70,7 +70,7 @@
                                         <td>{{ $item['class']['title'] ?? '' }}</td>
                                         <td>{{ $item['marks'] ?? '' }}</td>
                                         <td>
-                                            <select class="form-control" id="statusElement"
+                                            <select class="form-control statusElement" id="statusElement"
                                                 assignment_id="{{ $item['id'] }}">
                                                 <option value="pending" disabled="disabled"
                                                     {{ $item['status'] == 'pending' ? 'selected' : '' }}>Pending</option>
@@ -122,9 +122,10 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            $('#statusElement').change(function() {
+            $('.statusElement').change(function() {
                 var selectedValue = $(this).val();
                 var assignment_id = $(this).attr("assignment_id");
+
                 $.ajax({
                     url: "{{ route('ajax.status') }}",
                     method: "POST",
@@ -133,10 +134,24 @@
                         assignment_id: assignment_id,
                     },
                     success: function(response) {
-                        console.log(response.message);
+                        if (response.status === 200) {
+                            // Flash success message
+                            let message = response.message;
+                            var alertClass = response.status === 200 ? 'alert-success alert-dismissible fade show' :
+                                'alert-danger alert-dismissible fade show';
+                            var alertMessage = '<div class="alert ' + alertClass + '">' +
+                                message + '</div>';
+                            $('.alertMessage').html(alertMessage).show();
+
+                            setTimeout(function() {
+                                $('.alertMessage').fadeOut('slow', function() {
+                                    $(this).hide();
+                                });
+                            }, 3000);
+                        }
                     },
                     error: function(xhr, status, error) {
-                        console.log(xhr.responseText);
+                        console.log();(xhr.responseText);
                     }
                 });
             });

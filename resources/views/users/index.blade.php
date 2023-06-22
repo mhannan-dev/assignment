@@ -43,7 +43,7 @@
                                         <td>{{ $item['email'] }}</td>
                                         <td>
                                             @if ($item['id'] != 1)
-                                                <select class="form-control" id="userRoleChange"
+                                                <select class="form-control userRoleChange" id=""
                                                     user_id="{{ $item['id'] }}">
                                                     <option value="admin" {{ $item['type'] == 'admin' ? 'selected' : '' }}>
                                                         Admin
@@ -90,7 +90,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            $('#userRoleChange').change(function() {
+            $('.userRoleChange').change(function() {
                 var selectedValue = $(this).val();
                 var user_id = $(this).attr("user_id");
                 $.ajax({

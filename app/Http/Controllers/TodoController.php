@@ -11,7 +11,6 @@ use App\Models\AssignmentAttachment;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 use App\Http\Requests\StoreAssignmentRequest;
 use App\Http\Requests\UpdateAssignmentRequest;
@@ -82,6 +81,7 @@ class TodoController extends Controller
             return redirect()->route('assignments.index')->with('success', 'Assignment created successfully.');
 
         } catch (Exception $exception) {
+            dd($exception);
             DB::rollBack();
             Log::error($exception->getMessage());
             return redirect()->route('assignments.index')->with('error', 'Assignment not saved.');
@@ -193,7 +193,6 @@ class TodoController extends Controller
         $data = $request->all();
         $status = $data['selectedValue'];
         DB::table('assignments')->where('id', $data['assignment_id'])->update(['status' => $status]);
-
         return response()->json(['status' => 200, 'message' => 'Operation successful']);
     }
 }
