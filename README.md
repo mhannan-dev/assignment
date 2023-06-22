@@ -7,7 +7,8 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 - git clone https://github.com/mhannan-dev/onesttech-assignment.git
 - cd onesttech-assignment
 - composer update
-- rename .env.example to .env
+- save as .env.example to .env
+- Run php artisan key:generate
 - Database agnostic [schema migrations](https://laravel.com/docs/migrations).
 - [Robust background job processing](https://laravel.com/docs/queues).
 - [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
