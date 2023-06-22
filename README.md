@@ -8,9 +8,10 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 - cd onesttech-assignment
 - composer update
 - save as .env.example to .env
+- add database credential in .env file
 - Run php artisan key:generate
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
+- Run php artisan migrate:fresh --seed
+- Run php artisan serve
 - [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
