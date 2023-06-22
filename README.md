@@ -4,7 +4,7 @@
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects:
 
-- git clone https://github.com/mhannan-dev/onesttech-assignment.git
+- git clone https://github.com/mhannan-dev/assignment.git
 - cd assignment
 - composer update
 - save as .env.example to .env
