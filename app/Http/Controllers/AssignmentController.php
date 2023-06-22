@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Intervention\Image\Facades\Image;
 
-class TodoController extends Controller
+class AssignmentController extends Controller
 {
     public function index(Request $request)
     {

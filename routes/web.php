@@ -3,8 +3,8 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AssignmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,14 +23,14 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class);
     Route::any('/user/role/change', [UserController::class, 'changeRole'])->name('role.status');
-    Route::resource('assignments', TodoController::class);
-    Route::get('/assignment/filter', [TodoController::class, 'filter'])->name('filter');
-    Route::any('/add/files/{id}', [TodoController::class, 'addFilesSave'])->name('add.files');
+    Route::resource('assignments', AssignmentController::class);
+    Route::get('/assignment/filter', [AssignmentController::class, 'filter'])->name('filter');
+    Route::any('/add/files/{id}', [AssignmentController::class, 'addFilesSave'])->name('add.files');
 
-    Route::get('/attachment/download/{filename}', [TodoController::class, 'download'])->name('file.download');
-    Route::get('/attachments/download/{filename}', [TodoController::class, 'downloadFiles'])->name('files.download');
+    Route::get('/attachment/download/{filename}', [AssignmentController::class, 'download'])->name('file.download');
+    Route::get('/attachments/download/{filename}', [AssignmentController::class, 'downloadFiles'])->name('files.download');
 
-    Route::post('/status/change', [TodoController::class, 'changeStatus'])->name('ajax.status');
+    Route::post('/status/change', [AssignmentController::class, 'changeStatus'])->name('ajax.status');
 });
 Auth::routes([
   'register' => false, // Registration Routes...
