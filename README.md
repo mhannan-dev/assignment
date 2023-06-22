@@ -5,6 +5,8 @@
 - git clone https://github.com/mhannan-dev/assignment.git
 - cd assignment
 - composer update
+- npm install
+- npm run dev
 - save as .env.example to .env
 - add database credentials in .env file
 - Run php artisan key:generate
