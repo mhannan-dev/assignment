@@ -13,3 +13,5 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 - Run php artisan migrate:fresh --seed
 - Run php artisan serve
 - Go to link localhost:8000 OR 127.0.0.1:8000
+- Admin user login credential email - admin@admin.com and password: password
+- Manager user login credential email - manager@admin.com and password: password
