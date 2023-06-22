@@ -31,7 +31,6 @@ class TodoController extends Controller
         $classes = DB::table('class_models')->get();
         $subjects = DB::table('subjects')->get();
 
-
         $assignments = Assignment::with('subject', 'user', 'class')
         ->when($request->class_model_id != null, function ($q) {
             $q->where('class_model_id', request('class_model_id'));
