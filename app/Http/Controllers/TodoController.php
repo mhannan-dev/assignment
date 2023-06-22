@@ -2,24 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreAssignmentRequest;
-use App\Models\Assignment;
-use App\Models\AssignmentAttachment;
 use Exception;
+use App\Models\Assignment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Models\AssignmentAttachment;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
+use App\Http\Requests\StoreAssignmentRequest;
+use App\Http\Requests\UpdateAssignmentRequest;
 
 class TodoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $classes = DB::table('class_models')->get();
+        $subjects = DB::table('subjects')->get();
         $assignments = Assignment::with('subject', 'user', 'class')->get()->toArray();
-        return view('assignments.index', compact('assignments'));
+        return view('assignments.index', compact('assignments', 'classes', 'subjects'));
+    }
+    public function filter(Request $request)
+    {
+
+        $classes = DB::table('class_models')->get();
+        $subjects = DB::table('subjects')->get();
+
+
+        $assignments = Assignment::with('subject', 'user', 'class')
+        ->when($request->class_model_id != null, function ($q) {
+            $q->where('class_model_id', request('class_model_id'));
+        })->when($request->subject_id != null, function ($q) {
+            $q->where('subject_id', request('subject_id'));
+        })->get()->toArray();
+        return view('assignments.index', compact('assignments', 'classes', 'subjects'));
     }
 
     public function create()
@@ -56,14 +75,12 @@ class TodoController extends Controller
                 // Upload file
                 $file->move($location, $filename);
             }
-
             $assignment->image = $filename;
             $assignment->save();
             DB::commit();
             return redirect()->route('assignments.index')->with('success', 'Assignment created successfully.');
 
         } catch (Exception $exception) {
-            dd($exception);
             DB::rollBack();
             Log::error($exception->getMessage());
             return redirect()->route('assignments.index')->with('error', 'Assignment not saved.');
@@ -75,7 +92,6 @@ class TodoController extends Controller
         // dd('attachments');
         if (isset($attachments)) {
             foreach ($attachments as $key => $image) {
-
                 $attachFiles = new AssignmentAttachment();
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
                 if (!Storage::disk('public')->exists('files')) {
@@ -106,19 +122,49 @@ class TodoController extends Controller
         $item = Assignment::with('subject', 'user', 'class')->find($id);
         return view('assignments.show', compact('item'));
     }
-    public function update(Request $request, Assignment $assignment)
+    public function update(UpdateAssignmentRequest $request, Assignment $assignment)
     {
-        if ($assignment->user_id !== auth()->id()) {
-            abort(403); // Unauthorized access
+        try {
+            DB::beginTransaction();
+            $assignment->type = $request->type;
+            $assignment->assigned_by = $request->assigned_by;
+            $assignment->class_model_id = $request->class_model_id;
+            $assignment->section_id = $request->section_id;
+            $assignment->subject_id = $request->subject_id;
+            $assignment->assign_date = $request->assign_date;
+            $assignment->description = $request->description;
+            $assignment->subject_id = $request->subject_id;
+            $assignment->submission_date = $request->submission_date;
+            $assignment->user_id = auth()->id();
+            $assignment->marks = $request->marks;
+
+            $image = $request->file('attachment');
+            if (isset($image)) {
+
+                $oldFile = public_path("uploads/{$assignment->image}");
+                if (File::exists($oldFile)) {
+                    unlink($oldFile);
+                }
+                $file = $request->file('attachment');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                // File upload location
+                $location = 'uploads';
+                // Upload file
+                $file->move($location, $filename);
+            } else {
+                $filename = $assignment->image;
+            }
+            $assignment->image = $filename;
+            $assignment->update();
+            DB::commit();
+            return redirect()->route('assignments.index')->with('success', 'Assignment updated successfully.');
+
+        } catch (Exception $exception) {
+            dd($exception);
+            DB::rollBack();
+            Log::error($exception->getMessage());
+            return redirect()->route('assignments.index')->with('error', 'Assignment not saved.');
         }
-
-        $validatedData = $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-        ]);
-
-        $assignment->update($validatedData);
-        return redirect()->route('assignments.index')->with('success', 'Assignment updated successfully.');
     }
 
     public function destroy(Assignment $assignment)

@@ -11,6 +11,7 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    @stack('styles')
 </head>
 
 <body>
@@ -74,33 +75,7 @@
         </main>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $('#statusElement').change(function() {
-                var selectedValue = $(this).val();
-                var assignment_id = $(this).attr("assignment_id");
-                $.ajax({
-                    url: "{{ route('ajax.status') }}"
-                    , method: "POST"
-                    , data: {
-                        selectedValue: selectedValue,
-                        assignment_id: assignment_id,
-                    }
-                    , success: function(response) {
-                        console.log(response.message);
-                    }
-                    , error: function(xhr, status, error) {
-                        console.log(xhr.responseText);
-                    }
-                });
-            });
-        });
 
-    </script>
+    @stack('scripts')
 </body>
 </html>

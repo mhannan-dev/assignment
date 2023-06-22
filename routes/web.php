@@ -21,6 +21,8 @@ Route::get('/', function () {
 });
 Route::middleware('auth')->group(function () {
     Route::resource('assignments', TodoController::class);
+    Route::get('/assignment/filter', [TodoController::class, 'filter'])->name('filter');
+
     Route::get('/attachment/download/{filename}', [TodoController::class, 'download'])->name('file.download');
     Route::post('/status/change', [TodoController::class, 'changeStatus'])->name('ajax.status');
 });

@@ -6,6 +6,7 @@
             <div class="card-header">{{ __('Update') }}</div>
             <div class="card-body">
                 <form action="{{ route('assignments.update', $assignment->id) }}" method="post" enctype="multipart/form-data">
+                    @method('put')
                     <div class="row">
                         @include('assignments._form', ['buttonText' => 'Update'])
                     </div>
