@@ -119,7 +119,6 @@
     <div class="mb-3">
         <label class="form-label">Marks<span class="text-danger">*</span> </label>
         <input type="number" name="marks" value="{{ old('marks', $assignment->marks) }}" min="1" max="100" class="form-control {{ $errors->has('marks') ? 'is-invalid' : '' }}" placeholder="55">
-
         @if ($errors->has('marks'))
         <div class="invalid-feedback">
             <strong>{{ $errors->first('marks') }}</strong>
@@ -142,7 +141,6 @@
 
     </div>
 </div>
-
 <div class="col-md-12">
     <div class="mb-3">
         <label class="form-label">Description<span class="text-danger">*</span> </label>
@@ -155,3 +153,4 @@
     </div>
 </div>
 <button type="submit" class="btn btn-success">{{ $buttonText }}</button>
+

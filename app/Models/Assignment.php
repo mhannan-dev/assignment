@@ -17,7 +17,6 @@ class Assignment extends Model
     {
         return $this->belongsTo(User::class);
     }
-
     public function subject()
     {
         return $this->belongsTo(Subject::class);
@@ -25,6 +24,10 @@ class Assignment extends Model
     public function class()
     {
         return $this->belongsTo(ClassModel::class, 'class_model_id');
+    }
+    public function files()
+    {
+        return $this->hasMany(AssignmentAttachment::class);
     }
 
 }

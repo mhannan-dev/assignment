@@ -27,8 +27,9 @@ class StoreAssignmentRequest extends FormRequest
             "section_id" => 'required',
             "subject_id" => 'required',
             "assign_date" => 'required',
+            'assign_date' => 'required|date',
+            'submission_date' => 'required|date|after_or_equal:assign_date',
             "description" => 'required',
-            "submission_date" => 'required',
             "marks" =>  'required|numeric|between:1,100',
             'attachment' => 'required|mimes:jpeg,png,pdf|max:2048'
         ];
@@ -41,8 +42,8 @@ class StoreAssignmentRequest extends FormRequest
             'class_model_id.required' => 'Please select class!',
             'section_id.required' => 'Please select section!',
             'subject_id.required' => 'Please select subject!',
-            'assign_date.required' => 'Please select assign date!',
             'description.required' => 'Please write description!',
+            'assign_date.required' => 'Please select assign date!',
             'submission_date.required' => 'Please select submission date!',
             'marks.required' => 'Please enter marks!',
             'attachment.required' => 'File Required!',
