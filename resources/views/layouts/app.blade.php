@@ -31,6 +31,10 @@
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="{{ url('assignments') }}">Manage Assignment</a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{{ url('users') }}">Manage User</a>
+                        </li>
                     </ul>
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
@@ -70,6 +74,7 @@
             </div>
         </nav>
         @include('partials.flash-message')
+        @include('partials.ajax-flash')
         <main class="py-4">
             @yield('content')
         </main>

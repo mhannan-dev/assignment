@@ -36,6 +36,8 @@ class TodoController extends Controller
             $q->where('class_model_id', request('class_model_id'));
         })->when($request->subject_id != null, function ($q) {
             $q->where('subject_id', request('subject_id'));
+        })->when($request->status != null, function ($q) {
+            $q->where('status', request('status'));
         })->get()->toArray();
         return view('assignments.index', compact('assignments', 'classes', 'subjects'));
     }
@@ -191,6 +193,7 @@ class TodoController extends Controller
         $data = $request->all();
         $status = $data['selectedValue'];
         DB::table('assignments')->where('id', $data['assignment_id'])->update(['status' => $status]);
-        return response()->json(['message' => 'Value processed successfully']);
+
+        return response()->json(['status' => 200, 'message' => 'Operation successful']);
     }
 }
